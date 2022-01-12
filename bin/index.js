@@ -6,8 +6,8 @@ var c = canvas.getContext('2d');
 var keys = [];
 
 //sets canvas dimensions
-canvas.setAttribute('width', '500');
-canvas.setAttribute('height', '500');
+canvas.setAttribute('width', gameUI.clientWidth.toString());
+canvas.setAttribute('height', gameUI.clientHeight.toString());
 
 // Tile class
 class Tile {
