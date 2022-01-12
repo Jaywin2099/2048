@@ -1,9 +1,11 @@
-import Tile from tile.js
+console.log(Tile);
 
 //main game function
 const game = () => {
-    console.log(keys);
+    //background
+    c.fillStyle = 'white';
+    c.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 //initiate game interval
-export const gameInterval = setInterval(game, 1000 / fps);
+const gameInterval = setInterval(game, 1000 / FPS);

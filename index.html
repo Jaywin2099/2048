@@ -59,11 +59,16 @@
                 width: 500px;
                 margin: auto;
             }
-            #stats { height: 20%; }
-            #gameUI { height: 75%; }
+            #stats {
+                width: 100%;
+                height: 20%;
+            }
+            #gameUI {
+                width: 100%;
+                height: 75%;
+            }
         }
     </style>
-    <script src='bin/index.js'></script>
 </head>
 <body>
     <div id='wrapper'>
@@ -78,11 +83,12 @@
 
         <!-- game container-->
         <div id='gameUI'>
-            <canvas id='gameCanvas'></canvas>
+            <canvas id='gameCanvas' width=500 height=500></canvas>
         </div>
     </div>
 
     <!-- scripts -->
+    <script src='bin/index.js'></script>
     <script src='bin/2048.js'></script>
 </body>
 </html>

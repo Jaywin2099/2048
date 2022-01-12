@@ -1,8 +1,38 @@
 //globals
 var FPS = 30;
+var gameUI = document.getElementById('gameUI')
 var canvas = document.getElementById('gameCanvas');
 var c = canvas.getContext('2d');
 var keys = [];
+
+//sets canvas dimensions
+canvas.setAttribute('width', '500');
+canvas.setAttribute('height', '500');
+
+// Tile class
+class Tile {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+
+        //returns either 2 or 4
+        if (Math.random() <= 0.1) {
+            this.num = 4;
+        } else {
+            this.num = 2;
+        }
+    }
+
+    draw() {
+
+    }
+
+    move() {
+        //animate movement
+    }
+
+
+}
 
 //event listeners
 addEventListener('keydown', e => {
