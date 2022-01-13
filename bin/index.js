@@ -33,7 +33,7 @@ class Tile {
     draw(context) {
         //animates growing
         if (!this.drawn) {
-            this.radius = growRadius();
+            this.radius = this.growRadius();
         } else {
             this.radius = this.trueRadius;
         }
