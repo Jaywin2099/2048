@@ -1,15 +1,13 @@
 //configuration variables
 const cellPadding = 8;
 let tileRadius = (canvas.width - cellPadding * 3) / 8;
-
 const emptyGrid = [
     [null, null, null, null],
     [null, null, null, null],
     [null, null, null, null],
-    [null, null, null, null]
-];
-
+    [null, null, null, null]];
 let grid = emptyGrid;
+var lost = false;
 
 //functions (name of function explains its function)
 const addRandomTile = () => {
@@ -38,30 +36,143 @@ const game = () => {
         }
     }
     
-    console.log(keys);
-
     //checks for movement
-    if (keys.length !== 0) {
-        switch (keys[0]) {
-            case 'w': case 'ArrowUp':
-                for (let i = 0; i < 4; i++) {
-                    for (let j = 0; j < 4; j++) {
-                        
+    let moved = false;
+
+    //moves up
+    if (keys['w'] || keys['ArrowUp']) {
+        for (let i = 0; i < 4; i++) {
+            for (let j = 1; j < 4; j++) {
+                try {
+                    if (grid[j][i] !== null) {
+                        if (grid[j - 1][i] === null) {
+                            //move up to position j - 1
+                            grid[j][i].y =  (j - 1) * tileRadius * 2 + (j - 1) * cellPadding;
+                            
+                            //moves the tile in the grid up and replaces its old index with null
+                            grid[j - 1][i] = grid[j][i];
+                            grid[j][i] = null;
+                                
+                            moved = true;
+                            j-=2;
+                        } else if (grid[j - 1][i].num === grid[j][i].num) {
+                            //merge two tiles
+                            grid[j - 1][i] = new Tile(i * tileRadius * 2 + i * cellPadding, (j - 1) * tileRadius * 2 + (j - 1) * cellPadding, tileRadius, grid[j][i].num * 2)
+                                    
+                            //gets rid of old tile
+                            grid[j][i] = null;
+
+                            moved = true;
+                            j-=2;
+                        }
                     }
-                }
-            break;
-            case 'a': case 'ArrowLeft':
-    
-            break;
-            case 's': case 'ArrowDown':
-    
-            break;
-            case 'd': case 'ArrowRight':
-    
+                } catch {}
+            }
         }
-        keys.shift();
+
+        [keys['w'], keys['ArrowUp']] = [false, false];
     }
-    
+
+    //moves down
+    if (keys['s'] || keys['ArrowDown']) {
+        for (let i = 0; i < 4; i++) {
+            for (let j = 2; j >= 0; j--) {
+                try {
+                    if (grid[j][i] !== null) {
+                        if (grid[j + 1][i] === null) {
+                            //move up to position j + 1
+                            grid[j][i].y =  (j + 1) * tileRadius * 2 + (j + 1) * cellPadding;
+                            
+                            //moves the tile in the grid up and replaces its old index with null
+                            grid[j + 1][i] = grid[j][i];
+                            grid[j][i] = null;
+                            moved = true;
+                            j+=2;
+                        } else if (grid[j + 1][i].num === grid[j][i].num) {
+                            //merge two tiles
+                            grid[j + 1][i] = new Tile(i * tileRadius * 2 + i * cellPadding, (j + 1) * tileRadius * 2 + (j + 1) * cellPadding, tileRadius, grid[j][i].num * 2)
+                                    
+                            //gets rid of old tile
+                            grid[j][i] = null;
+                            moved = true;
+                            j+=2;
+                        }
+                    }
+                } catch {}
+            }
+        }
+
+        [keys['s'], keys['ArrowDown']] = [false, false];
+    }
+
+    //moves left
+    if (keys['a'] || keys['ArrowLeft']) {
+        for (let j = 0; j < 4; j++) {
+            for (let i = 1; i < 4; i++) {
+                try {
+                    if (grid[j][i] !== null) {
+                        if (grid[j - 1][i] === null) {
+                            //move up to position j - 1
+                            grid[j][i].x =  (j - 1) * tileRadius * 2 + (j - 1) * cellPadding;
+                            
+                            //moves the tile in the grid up and replaces its old index with null
+                            grid[j - 1][i] = grid[j][i];
+                            grid[j][i] = null;
+                                
+                            moved = true;
+                            j-=2;
+                        } else if (grid[j - 1][i].num === grid[j][i].num) {
+                            //merge two tiles
+                            grid[j - 1][i] = new Tile(i * tileRadius * 2 + i * cellPadding, (j - 1) * tileRadius * 2 + (j - 1) * cellPadding, tileRadius, grid[j][i].num * 2)
+                                    
+                            //gets rid of old tile
+                            grid[j][i] = null;
+
+                            moved = true;
+                            j-=2;
+                        }
+                    }
+                } catch {}
+            }
+        }
+
+        [keys['a'], keys['ArrowLeft']] = [false, false];
+    }
+
+    //moves right
+    if (keys['d'] || keys['ArrowRight']) {
+        for (let j = 0; j < 4; j++) {
+            for (let i = 2; i >= 0; i--) {
+                try {
+                    if (grid[j][i] !== null) {
+                        if (grid[j + 1][i] === null) {
+                            //move up to position j + 1
+                            grid[j][i].x =  (j + 1) * tileRadius * 2 + (j + 1) * cellPadding;
+                            
+                            //moves the tile in the grid up and replaces its old index with null
+                            grid[j + 1][i] = grid[j][i];
+                            grid[j][i] = null;
+                            moved = true;
+                            j+=2;
+                        } else if (grid[j + 1][i].num === grid[j][i].num) {
+                            //merge two tiles
+                            grid[j + 1][i] = new Tile(i * tileRadius * 2 + i * cellPadding, (j + 1) * tileRadius * 2 + (j + 1) * cellPadding, tileRadius, grid[j][i].num * 2)
+                                    
+                            //gets rid of old tile
+                            grid[j][i] = null;
+                            moved = true;
+                            j+=2;
+                        }
+                    }
+                } catch {}
+            }
+        }
+
+        [keys['d'], keys['ArrowRight']] = [false, false];
+    }
+
+    //adds new tile if moved
+    if (moved) addRandomTile();
 
     //draws tiles
     for (let i in grid) {

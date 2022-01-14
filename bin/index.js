@@ -3,7 +3,7 @@ var FPS = 30;
 var gameUI = document.getElementById('gameUI');
 var canvas = document.getElementById('gameCanvas');
 var c = canvas.getContext('2d');
-var keys = [];
+var keys = {};
 
 //all the colors of blocks. only 16 because there is space only for 16 different tiles on the board
 const colors = {
@@ -89,16 +89,7 @@ class Tile {
 
 //event listeners
 addEventListener('keydown', e => {
-    if ((e.key === 'w' || e.key === 'a' || e.key === 's' || e.key === 'd') || (e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowDown') && keys[0] !== e.key) {
-        keys.push(e.key);
-        if (keys.length > 2) {
-            keys.shift();
-        }
-    }
-});
-
-addEventListener('keyup', e => {
-    if ((e.key === 'w' || e.key === 'a' || e.key === 's' || e.key === 'd') || (e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowDown') && keys[0] === e.key) {
-        keys.shift();        
+    if ((e.key === 'w' || e.key === 'a' || e.key === 's' || e.key === 'd') || (e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowDown')) {
+        keys[e.key] = true;
     }
 });
