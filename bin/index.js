@@ -1,9 +1,13 @@
 //globals
-var FPS = 30;
+var FPS = 60;
+var keys = {};
+
+//elements
+var score = document.getElementById('score');
+var time = document.getElementById('time');
 var gameUI = document.getElementById('gameUI');
 var canvas = document.getElementById('gameCanvas');
 var c = canvas.getContext('2d');
-var keys = {};
 
 //all the colors of blocks. only 16 because there is space only for 16 different tiles on the board
 const colors = {
@@ -27,7 +31,6 @@ const colors = {
     'text': '#f9f6f2'
 }
 
-
 //sets canvas dimensions
 if (gameUI.clientWidth > gameUI.clientHeight) {
     canvas.setAttribute('width', (gameUI.clientHeight - 10).toString());
@@ -48,6 +51,7 @@ class Tile {
         this.drawn = false;
         this.trueRadius = rad;
         this.radius = 0;
+        this.shrunk = 0;
         
         //returns either 2 or 4
         if (!num && Math.random() <= 0.1) {
@@ -56,18 +60,23 @@ class Tile {
             this.num = num || 2;
         }
     }
-
     growRadius() {
-        return this.radius + 15;
+        return this.radius + 5;
     }
-
+    shrinkRadius() {
+        this.shrunk++;
+        return this.radius - 1;
+    }
     draw(context) {
         //animates growing
         context.fillStyle = colors[this.num];
         if (!this.drawn) {
-            this.radius = this.growRadius();
+            if (this.radius <= this.trueRadius + cellPadding/4) this.radius = this.growRadius();
+            else this.radius = this.shrinkRadius();
+            
             context.fillRect((this.x + this.trueRadius) - this.radius, (this.y + this.trueRadius) - this.radius, this.radius * 2, this.radius * 2);
-            if (this.radius >= this.trueRadius) this.drawn = true;
+
+            if (this.shrunk > 4) this.drawn = true;
         } else context.fillRect(this.x, this.y, this.trueRadius * 2, this.trueRadius * 2);
 
         //text
@@ -77,14 +86,6 @@ class Tile {
         context.font = `${this.textSize}px sans-serif`;
         context.fillText(this.num.toString(), this.x + this.trueRadius, this.y + this.trueRadius + this.textSize / 4);
     }
-
-    move() {
-        //move
-
-        //animate movement
-    }
-
-
 }
 
 //event listeners
