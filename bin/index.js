@@ -61,7 +61,7 @@ class Tile {
         }
     }
     growRadius() {
-        return this.radius + 5;
+        return this.radius + 7;
     }
     shrinkRadius() {
         this.shrunk++;
@@ -76,7 +76,7 @@ class Tile {
             
             context.fillRect((this.x + this.trueRadius) - this.radius, (this.y + this.trueRadius) - this.radius, this.radius * 2, this.radius * 2);
 
-            if (this.shrunk > 4) this.drawn = true;
+            if (this.shrunk > 2) this.drawn = true;
         } else context.fillRect(this.x, this.y, this.trueRadius * 2, this.trueRadius * 2);
 
         //text

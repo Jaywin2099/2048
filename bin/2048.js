@@ -26,9 +26,9 @@ addRandomTile();
 //main game function
 const game = () => {
     //updates score and time
-    score.textContent = totalScore.toString();
+    score.textContent = totalScore;
     time.textContent = Math.floor(Date.now() / 1000) - start;
-
+    
     //background
     c.fillStyle = '#b6ac99';
     c.fillRect(0, 0, canvas.width, canvas.height);
@@ -65,7 +65,7 @@ const game = () => {
                             grid[j - 1][i] = new Tile(i * tileRadius * 2 + i * cellPadding, (j - 1) * tileRadius * 2 + (j - 1) * cellPadding, tileRadius, grid[j][i].num * 2)
                             
                             //increases score
-                            totalScore += grid[j][i] * 2;
+                            totalScore += grid[j][i].num * 2;
 
                             //gets rid of old tile
                             grid[j][i] = null;
@@ -102,7 +102,7 @@ const game = () => {
                             grid[j + 1][i] = new Tile(i * tileRadius * 2 + i * cellPadding, (j + 1) * tileRadius * 2 + (j + 1) * cellPadding, tileRadius, grid[j][i].num * 2)
                             
                             //increases score
-                            totalScore += grid[j][i] * 2;
+                            totalScore += grid[j][i].num * 2;
 
                             //gets rid of old tile
                             grid[j][i] = null;
@@ -138,7 +138,7 @@ const game = () => {
                             grid[i][j - 1] = new Tile((j - 1) * tileRadius * 2 + (j - 1) * cellPadding, i * tileRadius * 2 + i * cellPadding, tileRadius, grid[i][j].num * 2)
                             
                             //increases score
-                            totalScore += grid[i][j] * 2;
+                            totalScore += grid[i][j].num * 2;
 
                             //gets rid of old tile
                             grid[i][j] = null;
@@ -174,7 +174,7 @@ const game = () => {
                             grid[i][j + 1] = new Tile((j + 1) * tileRadius * 2 + (j + 1) * cellPadding, i * tileRadius * 2 + i * cellPadding, tileRadius, grid[i][j].num * 2)
                             
                             //increases score
-                            totalScore += grid[i][j] * 2;
+                            totalScore += grid[i][j].num * 2;
                             
                             //gets rid of old tile
                             grid[i][j] = null;
