@@ -1,9 +1,6 @@
 //configuration variables
-const cellpadding = 8;
-let tileRadius;
-if (canvas.width > canvas.height) tileRadius = (canvas.height / 4 - cellpadding) / 2; 
-else tileRadius = (canvas.width / 4 - cellpadding * 3) / 2; 
-// maybe subract some padding for the canvas width if you cant do that in css
+const cellPadding = 8;
+let tileRadius = (canvas.width - cellPadding * 3) / 8;
 
 const emptyGrid = [
     [null, null, null, null],
@@ -14,27 +11,64 @@ const emptyGrid = [
 
 let grid = emptyGrid;
 
-//functions
+//functions (name of function explains its function)
 const addRandomTile = () => {
     let x, y;
     do {
         [x, y] = [Math.floor(Math.random() * 4), Math.floor(Math.random() * 4)];
     } while (grid[y][x] !== null);
 
-    grid[y][x] = new Tile(x, y, tileRadius);
+    grid[y][x] = new Tile(x * tileRadius * 2 + x * cellPadding, y * tileRadius * 2 + y * cellPadding, tileRadius);
 }
+
+addRandomTile();
+addRandomTile();
 
 //main game function
 const game = () => {
     //background
-    c.fillStyle = 'white';
+    c.fillStyle = '#b6ac99';
     c.fillRect(0, 0, canvas.width, canvas.height);
 
     //draw tile fillers
-    c.fillStyle = 'pink';
+    c.fillStyle = '#c9bbae';
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
-            c.fillRect(i * (cellpadding + tileRadius * 2), j * (cellpadding + tileRadius * 2), tileRadius * 2, tileRadius * 2);
+            c.fillRect(i * (cellPadding + tileRadius * 2), j * (cellPadding + tileRadius * 2), tileRadius * 2, tileRadius * 2);
+        }
+    }
+    
+    console.log(keys);
+
+    //checks for movement
+    if (keys.length !== 0) {
+        switch (keys[0]) {
+            case 'w': case 'ArrowUp':
+                for (let i = 0; i < 4; i++) {
+                    for (let j = 0; j < 4; j++) {
+                        
+                    }
+                }
+            break;
+            case 'a': case 'ArrowLeft':
+    
+            break;
+            case 's': case 'ArrowDown':
+    
+            break;
+            case 'd': case 'ArrowRight':
+    
+        }
+        keys.shift();
+    }
+    
+
+    //draws tiles
+    for (let i in grid) {
+        for(let j in grid) {
+            if (grid[j][i]) {
+                grid[j][i].draw(c);
+            }
         }
     }
 }
