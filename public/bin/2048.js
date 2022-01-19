@@ -9,6 +9,7 @@ const emptyGrid = [
 let grid = emptyGrid;
 let totalScore = 0;
 let start = Math.floor(Date.now() / 1000);
+let merges = [];
 
 //functions (name of function explains its function)
 const addRandomTile = () => {
@@ -51,8 +52,11 @@ const game = () => {
                 try {
                     if (grid[j][i] !== null) {
                         if (grid[j - 1][i] === null) {
-                            //move up to position j - 1
-                            grid[j][i].y =  (j - 1) * tileRadius * 2 + (j - 1) * cellPadding;
+                            //move to position j - 1
+                            grid[j][i].move({
+                                toX: null,
+                                toY: (j - 1) * tileRadius * 2 + (j - 1) * cellPadding
+                            });
                             
                             //moves the tile in the grid up and replaces its old index with null
                             grid[j - 1][i] = grid[j][i];
@@ -67,10 +71,15 @@ const game = () => {
                             //increases score
                             totalScore += grid[j][i].num * 2;
 
+                            //copies tile to merges array, then moves it.
+                            merges.push(grid[j][i]);
+                            merges[merges.length - 1].move({
+                                toX: null,
+                                toY: (j - 1) * tileRadius * 2 + (j - 1) * cellPadding
+                            });
+
                             //gets rid of old tile
                             grid[j][i] = null;
-
-                            
                             moved = true;
                             j--;
                         }
@@ -89,8 +98,11 @@ const game = () => {
                 try {
                     if (grid[j][i] !== null) {
                         if (grid[j + 1][i] === null) {
-                            //move up to position j + 1
-                            grid[j][i].y =  (j + 1) * tileRadius * 2 + (j + 1) * cellPadding;
+                            //move to position j + 1
+                            grid[j][i].move({
+                                toX: null,
+                                toY: (j + 1) * tileRadius * 2 + (j + 1) * cellPadding
+                            });
                             
                             //moves the tile in the grid up and replaces its old index with null
                             grid[j + 1][i] = grid[j][i];
@@ -103,6 +115,13 @@ const game = () => {
                             
                             //increases score
                             totalScore += grid[j][i].num * 2;
+
+                            //copies tile to merges array, then moves it.
+                            merges.push(grid[j][i]);
+                            merges[merges.length - 1].move({
+                                toX: null,
+                                toY: (j + 1) * tileRadius * 2 + (j + 1) * cellPadding
+                            });
 
                             //gets rid of old tile
                             grid[j][i] = null;
@@ -124,9 +143,12 @@ const game = () => {
                 try {
                     if (grid[i][j] !== null) {
                         if (grid[i][j - 1] === null) {
-                            //move up to position j - 1
-                            grid[i][j].x =  (j - 1) * tileRadius * 2 + (j - 1) * cellPadding;
-                            
+                            //move to position j - 1
+                            grid[i][j].move({
+                                toX: (j - 1) * tileRadius * 2 + (j - 1) * cellPadding,
+                                toY: null
+                            });
+
                             //moves the tile in the grid up and replaces its old index with null
                             grid[i][j - 1] = grid[i][j];
                             grid[i][j] = null;
@@ -140,9 +162,15 @@ const game = () => {
                             //increases score
                             totalScore += grid[i][j].num * 2;
 
+                            //copies tile to merges array, then moves it.
+                            merges.push(grid[i][j]);
+                            merges[merges.length - 1].move({
+                                toX: (j - 1) * tileRadius * 2 + (j - 1) * cellPadding,
+                                toY: null
+                            });
+                            
                             //gets rid of old tile
                             grid[i][j] = null;
-
                             moved = true;
                             j--;
                         }
@@ -161,9 +189,12 @@ const game = () => {
                 try {
                     if (grid[i][j] !== null) {
                         if (grid[i][j + 1] === null) {
-                            //move up to position j + 1
-                            grid[i][j].x =  (j + 1) * tileRadius * 2 + (j + 1) * cellPadding;
-                            
+                            //move to position j + 1
+                            grid[i][j].move({
+                                toX: (j + 1) * tileRadius * 2 + (j + 1) * cellPadding,
+                                toY: null
+                            });
+
                             //moves the tile in the grid up and replaces its old index with null
                             grid[i][j + 1] = grid[i][j];
                             grid[i][j] = null;
@@ -171,11 +202,18 @@ const game = () => {
                             j+=2;
                         } else if (grid[i][j + 1].num === grid[i][j].num) {
                             //merge two tiles
-                            grid[i][j + 1] = new Tile((j + 1) * tileRadius * 2 + (j + 1) * cellPadding, i * tileRadius * 2 + i * cellPadding, tileRadius, grid[i][j].num * 2)
-                            
+                            grid[i][j + 1] = new Tile((j + 1) * tileRadius * 2 + (j + 1) * cellPadding, i * tileRadius * 2 + i * cellPadding, tileRadius, grid[i][j].num * 2);
+
                             //increases score
                             totalScore += grid[i][j].num * 2;
                             
+                            //copies tile to merges array, then moves it.
+                            merges.push(grid[i][j]);
+                            merges[merges.length - 1].move({
+                                toX: (j + 1) * tileRadius * 2 + (j + 1) * cellPadding,
+                                toY: null
+                            });
+
                             //gets rid of old tile
                             grid[i][j] = null;
                             moved = true;
@@ -193,6 +231,13 @@ const game = () => {
     if (moved) addRandomTile();
 
     //draws tiles
+    for (let i in merges) {
+        merges[i].draw(c);
+
+        if (Math.abs(merges[i].x - merges[i].direction.toX) < 10) merges.splice(i, 1);
+        else if (Math.abs(merges[i].y - merges[i].direction.toY) < 10) merges.splice(i, 1);
+    }
+
     for (let i in grid) {
         for(let j in grid) {
             if (grid[j][i]) {
@@ -200,6 +245,8 @@ const game = () => {
             }
         }
     }
+
+    console.log(merges.length);
 }
 
 //initiate game interval

@@ -1,6 +1,9 @@
 //globals
 var FPS = 60;
 var keys = {};
+var smoother = function (num, end, looseness) {
+    return num + (end - num) / looseness;
+};
 
 //elements
 var score = document.getElementById('score');
@@ -52,7 +55,11 @@ class Tile {
         this.trueRadius = rad;
         this.radius = 0;
         this.shrunk = 0;
-        
+        this.direction = {
+            toX: null,
+            toY: null
+        };
+
         //returns either 2 or 4
         if (!num && Math.random() <= 0.1) {
             this.num = 4;
@@ -60,13 +67,16 @@ class Tile {
             this.num = num || 2;
         }
     }
+
     growRadius() {
         return this.radius + 7;
     }
+
     shrinkRadius() {
         this.shrunk++;
         return this.radius - 1;
     }
+
     draw(context) {
         //animates growing
         context.fillStyle = colors[this.num];
@@ -77,7 +87,12 @@ class Tile {
             context.fillRect((this.x + this.trueRadius) - this.radius, (this.y + this.trueRadius) - this.radius, this.radius * 2, this.radius * 2);
 
             if (this.shrunk > 2) this.drawn = true;
+
         } else context.fillRect(this.x, this.y, this.trueRadius * 2, this.trueRadius * 2);
+
+        //animate movement
+        if (this.direction.toX !== null) this.x = smoother(this.x, this.direction.toX, 4);
+        if (this.direction.toY !== null) this.y = smoother(this.y, this.direction.toY, 4);
 
         //text
         this.textSize = Math.floor(this.radius * 3/4);
@@ -85,6 +100,15 @@ class Tile {
         context.textAlign = 'center'
         context.font = `${this.textSize}px sans-serif`;
         context.fillText(this.num.toString(), this.x + this.trueRadius, this.y + this.trueRadius + this.textSize / 4);
+    }
+
+    move(direction) {
+        // finish last animation if needed
+        if (this.direction.toX !== null && this.x !== this.direction.toX) this.x = this.direction.toX;
+        else if (this.direction.toY !== null && this.y !== this.direction.toY) this.y = this.direction.toY;
+
+        // start new animation
+        this.direction = direction;
     }
 }
 
