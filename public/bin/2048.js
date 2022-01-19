@@ -234,10 +234,9 @@ const game = () => {
     for (let i in merges) {
         merges[i].draw(c);
 
-        if (Math.abs(merges[i].x - merges[i].direction.toX) < 10) merges.splice(i, 1);
-        else if (Math.abs(merges[i].y - merges[i].direction.toY) < 10) merges.splice(i, 1);
+        if (Math.abs(merges[i].x - merges[i].direction.toX) < tileRadius + cellPadding) merges.splice(i, 1);
+        else if (Math.abs(merges[i].y - merges[i].direction.toY) < tileRadius + cellPadding) merges.splice(i, 1);
     }
-
     for (let i in grid) {
         for(let j in grid) {
             if (grid[j][i]) {
@@ -245,8 +244,6 @@ const game = () => {
             }
         }
     }
-
-    console.log(merges.length);
 }
 
 //initiate game interval

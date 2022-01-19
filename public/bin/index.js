@@ -1,6 +1,7 @@
 //globals
 var FPS = 60;
 var keys = {};
+const smoothness = 5;
 var smoother = function (num, end, looseness) {
     return num + (end - num) / looseness;
 };
@@ -11,6 +12,7 @@ var time = document.getElementById('time');
 var gameUI = document.getElementById('gameUI');
 var canvas = document.getElementById('gameCanvas');
 var c = canvas.getContext('2d');
+
 
 //all the colors of blocks. only 16 because there is space only for 16 different tiles on the board
 const colors = {
@@ -53,7 +55,7 @@ class Tile {
         this.y = y;
         this.drawn = false;
         this.trueRadius = rad;
-        this.radius = 0;
+        this.radius = tileRadius / 4; //?
         this.shrunk = 0;
         this.direction = {
             toX: null,
@@ -87,12 +89,11 @@ class Tile {
             context.fillRect((this.x + this.trueRadius) - this.radius, (this.y + this.trueRadius) - this.radius, this.radius * 2, this.radius * 2);
 
             if (this.shrunk > 2) this.drawn = true;
-
         } else context.fillRect(this.x, this.y, this.trueRadius * 2, this.trueRadius * 2);
 
         //animate movement
-        if (this.direction.toX !== null) this.x = smoother(this.x, this.direction.toX, 4);
-        if (this.direction.toY !== null) this.y = smoother(this.y, this.direction.toY, 4);
+        if (this.direction.toX !== null) this.x = smoother(this.x, this.direction.toX, smoothness);
+        if (this.direction.toY !== null) this.y = smoother(this.y, this.direction.toY, smoothness);
 
         //text
         this.textSize = Math.floor(this.radius * 3/4);
