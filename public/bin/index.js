@@ -13,7 +13,6 @@ var gameUI = document.getElementById('gameUI');
 var canvas = document.getElementById('gameCanvas');
 var c = canvas.getContext('2d');
 
-
 //all the colors of blocks. only 16 because there is space only for 16 different tiles on the board
 const colors = {
     2: '#f9f6f2',
