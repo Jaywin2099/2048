@@ -21,6 +21,10 @@ const addRandomTile = () => {
     grid[y][x] = new Tile(x * tileRadius * 2 + x * cellPadding, y * tileRadius * 2 + y * cellPadding, tileRadius);
 }
 
+const gridFull = () => {
+
+}
+
 addRandomTile();
 addRandomTile();
 
@@ -42,7 +46,6 @@ const game = () => {
         }
     }
     
-    //checks for movement
     let moved = false;
 
     //moves up
@@ -50,8 +53,8 @@ const game = () => {
         for (let i = 0; i < 4; i++) {
             for (let j = 1; j < 4; j++) {
                 try {
-                    if (grid[j][i] !== null) {
-                        if (grid[j - 1][i] === null) {
+                    if (grid[j][i]) {
+                        if (!grid[j - 1][i]) {
                             //move to position j - 1
                             grid[j][i].move({
                                 toX: null,

@@ -1,10 +1,8 @@
 //globals
-var FPS = 60;
+const FPS = 60;
 var keys = {};
 const smoothness = 5;
-var smoother = function (num, end, looseness) {
-    return num + (end - num) / looseness;
-};
+const smoother = (num, end, looseness) => num + (end - num) / looseness;
 
 //elements
 var score = document.getElementById('score');
@@ -26,23 +24,14 @@ const colors = {
     512: '#edc850',
     1024: '#edc53f',
     2048: '#edc22e',
-    4096: '#3c3731',
-    8192: '#3c3731',
-    16384: '#3c3731',
-    32768: '#3c3731',
-    65536: '#3c3731',
+    'bigger': '#3c3731',
     'ogText': '#80776e',
     'text': '#f9f6f2'
 }
 
 //sets canvas dimensions
-if (gameUI.clientWidth > gameUI.clientHeight) {
-    canvas.setAttribute('width', (gameUI.clientHeight - 10).toString());
-    canvas.setAttribute('height', (gameUI.clientHeight - 10).toString());
-} else {
-    canvas.setAttribute('width', (gameUI.clientWidth - 10).toString());
-    canvas.setAttribute('height', (gameUI.clientWidth - 10).toString());
-}
+canvas.setAttribute('width', (gameUI.clientWidth - 10).toString());
+canvas.setAttribute('height', (gameUI.clientWidth - 10).toString());
 
 //sets the maxheight of the game UI
 gameUI.style.maxHeight = `${canvas.width + 10}px`;
@@ -54,11 +43,10 @@ class Tile {
         this.y = y;
         this.drawn = false;
         this.trueRadius = rad;
-        this.radius = tileRadius / 4; //?
+        this.radius = tileRadius / 4;
         this.shrunk = 0;
         this.direction = {
-            toX: null,
-            toY: null
+            toX: null, toY: null
         };
 
         //returns either 2 or 4
@@ -69,43 +57,41 @@ class Tile {
         }
     }
 
-    growRadius() {
-        return this.radius + 7;
-    }
+    growRadius = () => this.radius + 7;
 
-    shrinkRadius() {
-        this.shrunk++;
-        return this.radius - 1;
-    }
+    shrinkRadius = () => this.radius - ++this.shrunk;
 
     draw(context) {
         //animates growing
-        context.fillStyle = colors[this.num];
         if (!this.drawn) {
+            //handles radius growing/shrinking
             if (this.radius <= this.trueRadius + cellPadding/4) this.radius = this.growRadius();
             else this.radius = this.shrinkRadius();
-            
-            context.fillRect((this.x + this.trueRadius) - this.radius, (this.y + this.trueRadius) - this.radius, this.radius * 2, this.radius * 2);
 
-            if (this.shrunk > 2) this.drawn = true;
-        } else context.fillRect(this.x, this.y, this.trueRadius * 2, this.trueRadius * 2);
-
+            //stops animating after the shrinking has
+            if (this.shrunk > 3) this.drawn = true;
+        }
+        
         //animate movement
-        if (this.direction.toX !== null) this.x = smoother(this.x, this.direction.toX, smoothness);
-        if (this.direction.toY !== null) this.y = smoother(this.y, this.direction.toY, smoothness);
+        if (this.direction.toX) this.x = smoother(this.x, this.direction.toX, smoothness);
+        if (this.direction.toY) this.y = smoother(this.y, this.direction.toY, smoothness);
 
-        //text
-        this.textSize = Math.floor(this.radius * 3/4);
-        context.fillStyle = this.num <= 4 ? colors['ogText'] : colors['text'];
-        context.textAlign = 'center'
-        context.font = `${this.textSize}px sans-serif`;
-        context.fillText(this.num.toString(), this.x + this.trueRadius, this.y + this.trueRadius + this.textSize / 4);
+        //decides color then draws square
+        if (this.num >= 4096) context.fillStyle = colors['bigger'];
+        else context.fillStyle = colors[this.num];
+        context.fillRect(this.x + (this.trueRadius - this.radius)/2, this.y + (this.trueRadius - this.radius)/2, this.radius * 2, this.radius * 2);
+
+        //text formatted and drawn
+        context.fillStyle = this.num < 5 ? colors['ogText'] : colors['text'];
+        context.textAlign = 'center';
+        context.font = `${Math.floor(this.radius * 3/4)}px sans-serif`;
+        context.fillText(this.num.toString(), this.x + this.trueRadius, this.y + this.trueRadius + Math.floor(this.radius * 3/4) / 4);
     }
 
     move(direction) {
         // finish last animation if needed
-        if (this.direction.toX !== null && this.x !== this.direction.toX) this.x = this.direction.toX;
-        else if (this.direction.toY !== null && this.y !== this.direction.toY) this.y = this.direction.toY;
+        if (this.direction.toX && this.x !== this.direction.toX) this.x = this.direction.toX;
+        else if (this.direction.toY && this.y !== this.direction.toY) this.y = this.direction.toY;
 
         // start new animation
         this.direction = direction;
