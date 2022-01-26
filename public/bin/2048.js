@@ -2,7 +2,7 @@
 const cellPadding = 8;
 const numTilesInSide = 4;
 let tileRadius = (canvas.width - cellPadding * 3) / 8;
-let totalScore = 0;
+let totalScore = 0, highscore = 0;
 let start = Math.floor(Date.now() / 1000);
 let merges = [];
 const emptyGrid = [
@@ -11,23 +11,32 @@ const emptyGrid = [
     [null, null, null, null],
     [null, null, null, null]];
 let grid = emptyGrid;
-let moved = false;
+let lost = false;
 
 //functions (name of function explains its function)
-const addRandomTile = () => {
-    let x, y;
-    do {
-        [x, y] = [Math.floor(Math.random() * 4), Math.floor(Math.random() * 4)];
-    } while (grid[y][x] !== null);
+const addRandomTile = (numberOfTiles=1) => {
+    for (let i = 1; i <= numberOfTiles; i++) {
+        let x, y;
+        do {
+            [x, y] = [Math.floor(Math.random() * 4), Math.floor(Math.random() * 4)];
+        } while (grid[y][x] !== null);
 
-    grid[y][x] = new Tile(x * tileRadius * 2 + x * cellPadding, y * tileRadius * 2 + y * cellPadding, tileRadius);
+        grid[y][x] = new Tile(x * tileRadius * 2 + x * cellPadding, y * tileRadius * 2 + y * cellPadding, tileRadius);
+    }
 }
 
-const gridFull = () => {
-
+const impossibleToMerge = () => {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) { try {
+            //checks the grid cells to the right and below each cell to see if a merge is possible
+            if (grid[i][j] === null  || grid[i + 1][j] === null || grid[i][j + 1] === null || grid[i][j].num === grid[i][j + 1].num || grid[i][j].num === grid[i + 1][j].num) return false;
+        } catch {}}
+    }
+    return true;
 }
 
 const move = (twoKeys, x, y) => {
+    let moved = false;
     if (keys[twoKeys[0]] || keys[twoKeys[1]]) {
         let i, j, col;
         for (let row = 0; row < 4; row++) {
@@ -38,11 +47,11 @@ const move = (twoKeys, x, y) => {
 
             //loops through the columns or rows depending on x and y
             while ((x + y < 0) ? col < 4 : col > -1) {
-                console.log(i + ' ' + j);
                 if (x) j = col;
                 else if (y) i = col;
-                try {
-                    if (grid[i][j] !== null) {
+                
+                if (grid[i][j] !== null) {
+                    try {
                         if (grid[i + y][j + x] === null) {
                             //moves to position
                             if (x) {
@@ -88,8 +97,8 @@ const move = (twoKeys, x, y) => {
                             moved = true;
                             col += (x + y);
                         }
-                    }
-                } catch {}
+                    } catch {}
+                }
 
                 col += -1 * (x + y);
             }
@@ -97,16 +106,32 @@ const move = (twoKeys, x, y) => {
 
         [keys[twoKeys[0]], keys[twoKeys[1]]] = [false, false];
     }
+
+    return moved;
 }
 
-addRandomTile();
-addRandomTile();
+addRandomTile(2);
 
 //main game function
 const game = () => {
+    //if lost
+    if (lost) {
+        console.log('u lose');
+        grid = emptyGrid;
+        totalScore = 0;
+        addRandomTile(2);
+        start = Date.now();
+        merges = [];
+        lost = false;
+
+        grid.forEach((row) => {
+            console.log(row);
+        })
+    }
+
     //updates score and time
     score.textContent = totalScore;
-    time.textContent = Math.floor(Date.now() / 1000) - start;
+    if (!lost) time.textContent = Math.floor(Date.now() / 1000) - start;
     
     //background
     c.fillStyle = '#b6ac99';
@@ -119,18 +144,26 @@ const game = () => {
             c.fillRect(i * (cellPadding + tileRadius * 2), j * (cellPadding + tileRadius * 2), tileRadius * 2, tileRadius * 2);
         }
     }
-    
-    //defaults move to false
-    moved = false;
 
     //moves each direction
-    move(['w', 'ArrowUp'], 0, -1);
-    move(['s', 'ArrowDown'], 0, 1);
-    move(['a', 'ArrowLeft'], -1, 0);
-    move(['d', 'ArrowRight'], 1, 0);
-
-    //adds new tile
-    if (moved) addRandomTile();
+    if (move(['w', 'ArrowUp'], 0, -1) ||
+        move(['s', 'ArrowDown'], 0, 1) ||
+        move(['a', 'ArrowLeft'], -1, 0) ||
+        move(['d', 'ArrowRight'], 1, 0))
+        {
+        //checks if they player has lost
+        if (!lost && impossibleToMerge()) {
+            lost = true;
+            if (highscore === 0) statsList.appendChild(document.createElement('li'));
+            if (totalScore > highscore) {
+                highscore = totalScore;
+                statsList.lastChild.innerHTML = `Highscore<span>${highscore}</span>`;
+            }
+        } else {
+            //if the player hasn't lost then another tile will be added
+            addRandomTile();
+        }
+    }
 
     //draws tiles
     for (let i in merges) {
@@ -141,7 +174,7 @@ const game = () => {
     }
     for (let i in grid) {
         for(let j in grid) {
-            if (grid[j][i]) {
+            if (grid[j][i] !== null) {
                 grid[j][i].draw(c);
             }
         }

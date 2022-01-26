@@ -8,6 +8,8 @@ const smoother = (num, end, looseness) => num + (end - num) / looseness;
 var score = document.getElementById('score');
 var time = document.getElementById('time');
 var gameUI = document.getElementById('gameUI');
+var statsList = document.getElementById('statsList');
+
 var canvas = document.getElementById('gameCanvas');
 var c = canvas.getContext('2d');
 
