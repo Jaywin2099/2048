@@ -45,6 +45,7 @@ class Tile {
         this.trueRadius = rad;
         this.radius = tileRadius / 4;
         this.shrunk = 0;
+        this.moved = false;
         this.direction = {
             toX: null, toY: null
         };
@@ -57,7 +58,7 @@ class Tile {
         }
     }
 
-    growRadius = () => this.radius + 7;
+    growRadius = () => this.radius + 5;
 
     shrinkRadius = () => this.radius - ++this.shrunk;
 
@@ -73,8 +74,8 @@ class Tile {
         }
         
         //animate movement
-        if (this.direction.toX) this.x = smoother(this.x, this.direction.toX, smoothness);
-        if (this.direction.toY) this.y = smoother(this.y, this.direction.toY, smoothness);
+        if (typeof this.direction.toX === 'number') this.x = smoother(this.x, this.direction.toX, smoothness);
+        if (typeof this.direction.toY === 'number') this.y = smoother(this.y, this.direction.toY, smoothness);
 
         //decides color then draws square
         if (this.num >= 4096) context.fillStyle = colors['bigger'];
@@ -90,17 +91,9 @@ class Tile {
 
     move(direction) {
         // finish last animation if needed
-        if (this.direction.toX && this.x !== this.direction.toX) this.x = this.direction.toX;
-        else if (this.direction.toY && this.y !== this.direction.toY) this.y = this.direction.toY;
+        if (this.direction.toX !== null) this.x = this.direction.toX;
+        else if (this.direction.toY !== null) this.y = this.direction.toY;
 
-        // start new animation
         this.direction = direction;
     }
 }
-
-//event listeners
-addEventListener('keydown', e => {
-    if ((e.key === 'w' || e.key === 'a' || e.key === 's' || e.key === 'd') || (e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowDown')) {
-        keys[e.key] = true;
-    }
-});

@@ -1,0 +1,181 @@
+ /*
+    //moves up
+    if (keys['w'] || keys['ArrowUp']) {
+        for (let i = 0; i < 4; i++) {
+            for (let j = 1; j < 4; j++) {
+                try {
+                    if (grid[j][i] !== null) {
+                        if (grid[j - 1][i] === null) {
+                            //move to position j - 1
+                            grid[j][i].move({
+                                toX: null,
+                                toY: (j - 1) * tileRadius * 2 + (j - 1) * cellPadding
+                            });
+                            
+                            //moves the tile in the grid up and replaces its old index with null
+                            grid[j - 1][i] = grid[j][i];
+                            grid[j][i] = null;
+                            moved = true;
+                            j-=2;
+                        } else if (grid[j - 1][i].num === grid[j][i].num) {
+                            //merge two tiles
+                            grid[j - 1][i] = new Tile(i * tileRadius * 2 + i * cellPadding, (j - 1) * tileRadius * 2 + (j - 1) * cellPadding, tileRadius, grid[j][i].num * 2)
+                            
+                            //increases score
+                            totalScore += grid[j][i].num * 2;
+
+                            //copies tile to merges array, then moves it.
+                            merges.push(grid[j][i]);
+                            merges[merges.length - 1].move({
+                                toX: null,
+                                toY: (j - 1) * tileRadius * 2 + (j - 1) * cellPadding
+                            });
+
+                            //gets rid of old tile
+                            grid[j][i] = null;
+                            moved = true;
+                            j--;
+                        }
+                    }
+                } catch {}
+            }
+        }
+
+        [keys['w'], keys['ArrowUp']] = [false, false];
+    }
+    
+    //moves down
+    if (keys['s'] || keys['ArrowDown']) {
+        for (let i = 0; i < 4; i++) {
+            for (let j = 2; j > -1; j--) {
+                try {
+                    if (grid[j][i] !== null) {
+                        if (grid[j + 1][i] === null) {
+                            //move to position j + 1
+                            grid[j][i].move({
+                                toX: null,
+                                toY: (j + 1) * tileRadius * 2 + (j + 1) * cellPadding
+                            });
+                            
+                            //moves the tile in the grid up and replaces its old index with null
+                            grid[j + 1][i] = grid[j][i];
+                            grid[j][i] = null;
+                            moved = true;
+                            j+=2;
+                        } else if (grid[j + 1][i].num === grid[j][i].num) {
+                            //merge two tiles
+                            grid[j + 1][i] = new Tile(i * tileRadius * 2 + i * cellPadding, (j + 1) * tileRadius * 2 + (j + 1) * cellPadding, tileRadius, grid[j][i].num * 2)
+                            
+                            //increases score
+                            totalScore += grid[j][i].num * 2;
+
+                            //copies tile to merges array, then moves it.
+                            merges.push(grid[j][i]);
+                            merges[merges.length - 1].move({
+                                toX: null,
+                                toY: (j + 1) * tileRadius * 2 + (j + 1) * cellPadding
+                            });
+
+                            //gets rid of old tile
+                            grid[j][i] = null;
+                            moved = true;
+                            j++;
+                        }
+                    }
+                } catch {}
+            }
+        }
+
+        [keys['s'], keys['ArrowDown']] = [false, false];
+    }
+
+    //moves left
+    if (keys['a'] || keys['ArrowLeft']) {
+        for (let i = 0; i < 4; i++) {
+            for (let j = 1; j < 4; j++) {
+                try {
+                    if (grid[i][j] !== null) {
+                        if (grid[i][j - 1] === null) {
+                            //move to position j - 1
+                            grid[i][j].move({
+                                toX: (j - 1) * tileRadius * 2 + (j - 1) * cellPadding,
+                                toY: null
+                            });
+
+                            //moves the tile in the grid up and replaces its old index with null
+                            grid[i][j - 1] = grid[i][j];
+                            grid[i][j] = null;
+                            moved = true;
+                            j-=2;
+                        } else if (grid[i][j - 1].num === grid[i][j].num) {
+                            //merge two tiles
+                            grid[i][j - 1] = new Tile((j - 1) * tileRadius * 2 + (j - 1) * cellPadding, i * tileRadius * 2 + i * cellPadding, tileRadius, grid[i][j].num * 2)
+                            
+                            //increases score
+                            totalScore += grid[i][j].num * 2;
+
+                            //copies tile to merges array, then moves it.
+                            merges.push(grid[i][j]);
+                            merges[merges.length - 1].move({
+                                toX: (j - 1) * tileRadius * 2 + (j - 1) * cellPadding,
+                                toY: null
+                            });
+                            
+                            //gets rid of old tile
+                            grid[i][j] = null;
+                            moved = true;
+                            j--;
+                        }
+                    }
+                } catch {}
+            }
+        }
+
+        [keys['a'], keys['ArrowLeft']] = [false, false];
+    }
+
+    //moves right
+    if (keys['d'] || keys['ArrowRight']) {
+        for (let i = 0; i < 4; i++) {
+            for (let j = 2; j > -1; j--) {
+                try {
+                    if (grid[i][j] !== null) {
+                        if (grid[i][j + 1] === null) {
+                            //move to position j + 1
+                            grid[i][j].move({
+                                toX: (j + 1) * tileRadius * 2 + (j + 1) * cellPadding,
+                                toY: null
+                            });
+
+                            //moves the tile in the grid up and replaces its old index with null
+                            grid[i][j + 1] = grid[i][j];
+                            grid[i][j] = null;
+                            moved = true;
+                            j+=2;
+                        } else if (grid[i][j + 1].num === grid[i][j].num) {
+                            //merge two tiles
+                            grid[i][j + 1] = new Tile((j + 1) * tileRadius * 2 + (j + 1) * cellPadding, i * tileRadius * 2 + i * cellPadding, tileRadius, grid[i][j].num * 2);
+
+                            //increases score
+                            totalScore += grid[i][j].num * 2;
+                            
+                            //copies tile to merges array, then moves it.
+                            merges.push(grid[i][j]);
+                            merges[merges.length - 1].move({
+                                toX: (j + 1) * tileRadius * 2 + (j + 1) * cellPadding,
+                                toY: null
+                            });
+
+                            //gets rid of old tile
+                            grid[i][j] = null;
+                            moved = true;
+                            j++;
+                        }
+                    }
+                } catch {}
+            }
+        }
+
+        [keys['d'], keys['ArrowRight']] = [false, false];
+    }
+    */
