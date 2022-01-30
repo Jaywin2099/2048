@@ -101,6 +101,7 @@ class Tile {
         if (this.direction.toX !== null) this.x = this.direction.toX;
         else if (this.direction.toY !== null) this.y = this.direction.toY;
 
+        //updates the direction with the new direction
         this.direction = direction;
     }
 }
