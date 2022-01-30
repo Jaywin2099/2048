@@ -9,7 +9,8 @@ var score = document.getElementById('score');
 var time = document.getElementById('time');
 var gameUI = document.getElementById('gameUI');
 var statsList = document.getElementById('statsList');
-
+var restart = document.getElementById('restart');
+var restartButton = document.getElementById('restartButton');
 var canvas = document.getElementById('gameCanvas');
 var c = canvas.getContext('2d');
 
@@ -34,6 +35,10 @@ const colors = {
 //sets canvas dimensions
 canvas.setAttribute('width', (gameUI.clientWidth - 10).toString());
 canvas.setAttribute('height', (gameUI.clientWidth - 10).toString());
+
+//sets restart background dimenstions
+restart.style.width = `${canvas.width}px`;
+restart.style.height = `${canvas.height}px`;
 
 //sets the maxheight of the game UI
 gameUI.style.maxHeight = `${canvas.width + 10}px`;

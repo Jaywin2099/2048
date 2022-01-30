@@ -12,6 +12,7 @@
         }
         body {
             background-color: linen;
+            font-family: sans-serif;
         }
         #wrapper {
             width: 100%;
@@ -30,7 +31,6 @@
             justify-content: center;
             align-items: center;
             width: 50%;
-            font-family: sans-serif;
         }
         #stats ul {
             width: 50%;
@@ -65,7 +65,20 @@
         #score, #time {
             display: inline-block;
         }
-
+        #restart {
+            background-color: #44444444;
+            position: absolute;
+            z-index: 98;
+            display: none;
+        }
+        #restart button {
+            position: relative;
+            width: 75px;
+            height: 55px;
+            left: calc(50% - 37.5px);
+            top: calc(50% - 27.5px);
+            background-color: white;
+        }
         @media (min-width: 500px) {
             #wrapper {
                 width: 500px;
@@ -88,6 +101,9 @@
         <!-- game container-->
         <div id='gameUI'>
             <canvas id='gameCanvas'></canvas>
+            <div id='restart'>
+                <button id='restartButton'>Restart</button>
+            </div>
         </div>
     </div>
 
