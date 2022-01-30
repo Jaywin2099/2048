@@ -29,15 +29,10 @@ const addRandomTile = (numberOfTiles=1) => {
 }
 
 const impossibleToMerge = () => {
-    for (let i = 0; i <= 4; i++) {
-        for (let j = 0; j <= 4; j++) { try {
-            //checks the grid cells to the right and below each cell to see if a merge is possible
-            if (grid[i][j] === null  || grid[i + 1][j] === null || grid[i][j + 1] === null) return false;
-            if (grid[i][j].num === grid[i][j + 1].num || grid[i][j].num === grid[i + 1][j].num) {
-                console.log(`${i}, ${j}, ${grid[i][j]}`);
-                return false;
-            }
-        } catch {}}
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (grid[i][j] === null || grid[i][j + 1] === null || grid[i][j].num === grid[i][j + 1].num || grid[j][i] === null || grid[j + 1][i] === null || grid[j][i].num === grid[j + 1][i].num) return false;
+        }
     }
     return true;
 }
