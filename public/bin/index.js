@@ -3,6 +3,7 @@ const FPS = 60;
 var keys = {};
 const smoothness = 5;
 const smoother = (num, end, looseness) => num + (end - num) / looseness;
+var touch = {};
 
 //elements
 var score = document.getElementById('score');
@@ -65,7 +66,7 @@ class Tile {
         }
     }
 
-    growRadius = () => this.radius + 5;
+    growRadius = () => this.radius + 4.5;
 
     shrinkRadius = () => this.radius - ++this.shrunk;
 
@@ -77,7 +78,10 @@ class Tile {
             else this.radius = this.shrinkRadius();
 
             //stops animating after the shrinking has
-            if (this.shrunk > 3) this.drawn = true;
+            if (this.shrunk > 3) {
+                this.drawn = true;
+                this.radius = this.trueRadius;
+            }
         }
         
         //animate movement
@@ -87,7 +91,7 @@ class Tile {
         //decides color then draws square
         if (this.num >= 4096) context.fillStyle = colors['bigger'];
         else context.fillStyle = colors[this.num];
-        context.fillRect(this.x + (this.trueRadius - this.radius)/2, this.y + (this.trueRadius - this.radius)/2, this.radius * 2, this.radius * 2);
+        context.fillRect(this.x + (this.trueRadius - this.radius), this.y + (this.trueRadius - this.radius), this.radius * 2, this.radius * 2);
 
         //text formatted and drawn
         context.fillStyle = this.num < 5 ? colors['ogText'] : colors['text'];

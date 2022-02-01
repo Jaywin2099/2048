@@ -188,3 +188,24 @@ addEventListener('keydown', e => {
         keys[e.key] = true;
     }
 });
+
+addEventListener('touchstart', e => {
+    //logs the starting touch postion
+    touch.x = e.touches[0].clientX;
+    touch.y = e.touches[0].clientY;
+});
+
+addEventListener('touchend', e => {
+    //gets the change in touch position
+    touch.deltaX = e.changedTouches[0].clientX - touch.x;
+    touch.deltaY = e.changedTouches[0].clientY - touch.y;
+
+    //translates the swipe direction into key press direction by seeing if the change in x is > the change in y
+    if (Math.abs(touch.deltaX) > Math.abs(touch.deltaY)) {
+        if (touch.deltaX < 0) keys['a'] = true;
+        else if (touch.deltaX > 0) keys['d'] = true;
+    } else {
+        if (touch.deltaY < 0) keys['w'] = true;
+        else if (touch.deltaY > 0) keys['s'] = true;
+    }
+});
